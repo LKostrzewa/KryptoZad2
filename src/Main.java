@@ -6,8 +6,8 @@ public class Main {
 
     public static void main(String[] args){
         Rabin szyfry = new Rabin();
-        int p = szyfry.getP();
-        int q = szyfry.getP();
+        BigInteger p = szyfry.getP();
+        BigInteger q = szyfry.getP();
         BigInteger n = szyfry.getN(p , q);
         System.out.println(p);
         System.out.println(q);
@@ -29,10 +29,20 @@ public class Main {
             System.out.println(i);
             System.out.println(szyfry.x1[i]);
         }
+        for(int i=0; i<szyfry.x2.length; i++){
+            System.out.print("Wartosc x2 jako bigint : ");
+            System.out.println(i);
+            System.out.println(szyfry.x2[i]);
+        }
         for(int i=0; i<szyfry.x3.length; i++){
             System.out.print("Wartosc x3 jako bigint : ");
             System.out.println(i);
             System.out.println(szyfry.x3[i]);
+        }
+        for(int i=0; i<szyfry.x4.length; i++){
+            System.out.print("Wartosc x4 jako bigint : ");
+            System.out.println(i);
+            System.out.println(szyfry.x4[i]);
         }
         uno=szyfry.convert(szyfry.x1);
         dos=szyfry.convert(szyfry.x2);
