@@ -7,13 +7,6 @@ import java.nio.file.Paths;
 import java.util.Random;
 import java.math.BigInteger;
 
-
-///maina jeszcze nie ruszyłem - uzupełnie go adekwatnie do funkcji stąd
-///dodam jeszcze jedno okno do wyświetlania klucza publicznego
-///nie rozkminiłem nadal czy konwertowanie wszystkiego z tab byte na jakieś
-///łańcuchy nie byłoby dobrym posunięciem
-///chyba że ogarniemy jak wybierać który z 4 pierwiastków jest poprawny 
-
 public class Rabin {
 
     BigInteger x1[], x2[], x3[], x4[];
@@ -24,12 +17,16 @@ public class Rabin {
         /*Random rand = new Random();
         int p=rand.nextInt(700)*4+3;
         return p;*/
+        BigInteger FOUR;
+        FOUR = BigInteger.valueOf(4);
+        BigInteger THREE;
+        THREE = BigInteger.valueOf(3);
         BigInteger P;
+        Random rnd = new Random();
         do {
-            Random rnd = new Random();
             P = BigInteger.probablePrime(10, rnd);
-            System.out.println("Heja");
-        } while (!returnPrime(P));
+            System.out.println("Heja " + P);
+        } while (!P.mod(FOUR).equals(THREE));
         return P;
 
     }
@@ -114,6 +111,7 @@ public class Rabin {
     }
     ///szyfrowanie --> C=P^2(mod N)
     public BigInteger[] cipher(byte[] plain, BigInteger n){
+        //short[] plainShort = convert2(plain);
         BigInteger[] ciphered = new BigInteger[plain.length];
         BigInteger temp;
         for(int i=0 ;i<plain.length ;i++)
@@ -182,7 +180,8 @@ public class Rabin {
 ///tzn mp=c^((p+1)/4)(mod p) i mq=c^((q+1)/4)(mod q)
             //pom=ciphered[i].pow((p+1)/4);
             //mp1[i]=pom.mod(BigInteger.valueOf(p));
-            BigInteger FOUR = new BigInteger("4");
+            BigInteger FOUR;
+            FOUR = BigInteger.valueOf(4);
             pom = p.add(BigInteger.ONE);
             pom = pom.divide(FOUR);
             mp1[i] = ciphered[i].modPow(pom, p);
@@ -244,6 +243,21 @@ public class Rabin {
         return converted;
     }
 
+    public short[] convert3(BigInteger x[]){
+        short[] converted = new short[x.length];
+        for(int i=0; i<x.length; i++){
+            converted[i] = (short) x[i].byteValue();
+        }
+        return converted;
+    }
+
+    public short[] convert2(byte x[]){
+        short[] converted = new short[x.length];
+        for(int i=0; i<x.length; i++){
+            converted[i] = (short) x[i];
+        }
+        return converted;
+    }
 
     public void saveToFile(byte[] cipheredText, String filePath, String filetoPath){
         Path path = Paths.get(filetoPath);
