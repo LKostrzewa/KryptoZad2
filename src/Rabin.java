@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Rabin {
 
@@ -24,10 +25,16 @@ public class Rabin {
         BigInteger P;
         Random rnd = new Random();
         do {
-            P = BigInteger.probablePrime(10, rnd);
+            P = BigInteger.probablePrime(64, rnd);
             System.out.println("Heja " + P);
         } while (!P.mod(FOUR).equals(THREE));
+        //long P;
+
+
+
         return P;
+
+
 
     }
 
@@ -110,21 +117,40 @@ public class Rabin {
         return n;
     }
     ///szyfrowanie --> C=P^2(mod N)
-    public BigInteger[] cipher(byte[] plain, BigInteger n){
+    public BigInteger[] cipher(int[] plain, BigInteger n){
         //short[] plainShort = convert2(plain);
         BigInteger[] ciphered = new BigInteger[plain.length];
         BigInteger temp;
         for(int i=0 ;i<plain.length ;i++)
         {
-            int tmp;
-            tmp=(plain[i]*plain[i]);
+            long tmp;
+            System.out.println(plain[i]);
+            int pom1 = 0x00000000;
+
+            for(int k = 0; k < Integer.numberOfLeadingZeros((int)pom1); k++) {
+                System.out.print('0');
+            }
+            System.out.println(Integer.toBinaryString((int)pom1));
+
+            long pom = (long) ((plain[i])<<32 | pom1 & 0xffffffff);
+            //long pom = (long) (plain[i] & 0xffffffff | (pom1)<<32);
+            System.out.println(pom);
+            for(int k = 0; k < Long.numberOfLeadingZeros((long)pom); k++) {
+                System.out.print('0');
+            }
+            System.out.println(Long.toBinaryString((long)pom));
+            tmp=(pom*pom);
+            for(int k = 0; k < Long.numberOfLeadingZeros((long)tmp); k++) {
+                System.out.print('0');
+            }
+            System.out.println(Long.toBinaryString((long)tmp));
             temp=BigInteger.valueOf(tmp);
-            System.out.println("Tekst jawny o indeksie " + i + "to: " + plain[i]);
-            System.out.print("zkwadratowany element tekstu jawnego : ");
-            System.out.println(temp.mod(n));
-            System.out.println("N: " + n);
+            //System.out.println("Tekst jawny o indeksie " + i + "to: " + plain[i]);
+            //System.out.print("zkwadratowany element tekstu jawnego : ");
+            //System.out.println(temp.mod(n));
+            //System.out.println("N: " + n);
             ciphered[i]=temp.mod(n);
-            System.out.println("zaszyfrowany element: " + ciphered[i]);
+            //System.out.println("zaszyfrowany element: " + ciphered[i]);
         }
         return ciphered;
     }
@@ -241,6 +267,14 @@ public class Rabin {
             converted[i] = x[i].byteValue();
         }
         return converted;
+    }
+
+    public static final byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte)(value >>> 24),
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value};
     }
 
     public short[] convert3(BigInteger x[]){
