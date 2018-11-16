@@ -6,13 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.math.BigInteger;
-
-
-///maina jeszcze nie ruszyłem - uzupełnie go adekwatnie do funkcji stąd
-///dodam jeszcze jedno okno do wyświetlania klucza publicznego
-///nie rozkminiłem nadal czy konwertowanie wszystkiego z tab byte na jakieś
-///łańcuchy nie byłoby dobrym posunięciem
-///chyba że ogarniemy jak wybierać który z 4 pierwiastków jest poprawny 
+import java.util.ArrayList;
 
 public class Rabin {
 
@@ -24,15 +18,22 @@ public class Rabin {
         /*Random rand = new Random();
         int p=rand.nextInt(700)*4+3;
         return p;*/
+        BigInteger FOUR;
+        FOUR = BigInteger.valueOf(4);
+        BigInteger THREE;
+        THREE = BigInteger.valueOf(3);
         BigInteger P;
+        Random rnd = new Random();
         do {
-            Random rnd = new Random();
-            P = BigInteger.probablePrime(10, rnd);
-            System.out.println("Heja");
-        } while (!returnPrime(P));
+            P = BigInteger.probablePrime(64, rnd);  // tu se ustawiasz długość klucza do losowania w bitach
+            System.out.println("Heja " + P);                    // to zrobilem zeby pokazalo ile razy losuje klucz
+        } while (!P.mod(FOUR).equals(THREE));
         return P;
-
     }
+
+
+
+    // TEJ FUNKCJI NIE UZYWAM
 
     public boolean returnPrime(BigInteger number) {
         //check via BigInteger.isProbablePrime(certainty)
@@ -53,6 +54,9 @@ public class Rabin {
         }
         return true;
     }
+
+
+    // TEJ TEZ NIE XDD
 
     public boolean Miller_Rabin(BigInteger P){
         Random rnd = new Random();
@@ -109,24 +113,44 @@ public class Rabin {
         BigInteger tmp1, tmp2, n;
         //tmp1=BigInteger.valueOf(p);
         //tmp2=BigInteger.valueOf(q);
-        n=p.multiply(q);
+        n=p.multiply(q);                // Normalnie mnozymy
         return n;
     }
     ///szyfrowanie --> C=P^2(mod N)
-    public BigInteger[] cipher(byte[] plain, BigInteger n){
-        BigInteger[] ciphered = new BigInteger[plain.length];
+    public BigInteger[] cipher(int[] plain, BigInteger n){
+        //short[] plainShort = convert2(plain);                             // Tu sie zaczyna jazda wariacka
+        BigInteger[] ciphered = new BigInteger[plain.length];               // na starcie wczytuje tablice utworzoną w main
         BigInteger temp;
         for(int i=0 ;i<plain.length ;i++)
         {
-            int tmp;
-            tmp=(plain[i]*plain[i]);
+            long tmp;
+            System.out.println(plain[i]);
+            int pom1 = 0x00000000;                                          // to bedzie int do sprawdzania, ktory z 4 znakow
+                                                                            // jest poprawny
+            for(int k = 0; k < Integer.numberOfLeadingZeros((int)pom1); k++) {  // -- od tad
+                System.out.print('0');
+            }
+            System.out.println(Integer.toBinaryString((int)pom1));          // -- do tad se wyswietlam inta z dodanymi zerami
+
+            long pom = (long) ((plain[i])<<32 | pom1 & 0xffffffff);         // tworzze longa z inta 'zer' i naszego znaku
+            //long pom = (long) (plain[i] & 0xffffffff | (pom1)<<32);
+            System.out.println(pom);                                        // tu podobnie
+            for(int k = 0; k < Long.numberOfLeadingZeros((long)pom); k++) {
+                System.out.print('0');
+            }
+            System.out.println(Long.toBinaryString((long)pom));
+            tmp=(pom*pom);                                                  // mnozymy se long*long (nie powinno sie wyjebac bo pierwsze 32 bit to same zera
+            for(int k = 0; k < Long.numberOfLeadingZeros((long)tmp); k++) {
+                System.out.print('0');
+            }
+            System.out.println(Long.toBinaryString((long)tmp));
             temp=BigInteger.valueOf(tmp);
-            System.out.println("Tekst jawny o indeksie " + i + "to: " + plain[i]);
-            System.out.print("zkwadratowany element tekstu jawnego : ");
-            System.out.println(temp.mod(n));
-            System.out.println("N: " + n);
+            //System.out.println("Tekst jawny o indeksie " + i + "to: " + plain[i]);
+            //System.out.print("zkwadratowany element tekstu jawnego : ");
+            //System.out.println(temp.mod(n));
+            //System.out.println("N: " + n);
             ciphered[i]=temp.mod(n);
-            System.out.println("zaszyfrowany element: " + ciphered[i]);
+            //System.out.println("zaszyfrowany element: " + ciphered[i]);
         }
         return ciphered;
     }
@@ -182,7 +206,8 @@ public class Rabin {
 ///tzn mp=c^((p+1)/4)(mod p) i mq=c^((q+1)/4)(mod q)
             //pom=ciphered[i].pow((p+1)/4);
             //mp1[i]=pom.mod(BigInteger.valueOf(p));
-            BigInteger FOUR = new BigInteger("4");
+            BigInteger FOUR;
+            FOUR = BigInteger.valueOf(4);
             pom = p.add(BigInteger.ONE);
             pom = pom.divide(FOUR);
             mp1[i] = ciphered[i].modPow(pom, p);
@@ -244,6 +269,29 @@ public class Rabin {
         return converted;
     }
 
+    public static final byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte)(value >>> 24),
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value};
+    }
+
+    public short[] convert3(BigInteger x[]){
+        short[] converted = new short[x.length];
+        for(int i=0; i<x.length; i++){
+            converted[i] = (short) x[i].byteValue();
+        }
+        return converted;
+    }
+
+    public short[] convert2(byte x[]){
+        short[] converted = new short[x.length];
+        for(int i=0; i<x.length; i++){
+            converted[i] = (short) x[i];
+        }
+        return converted;
+    }
 
     public void saveToFile(byte[] cipheredText, String filePath, String filetoPath){
         Path path = Paths.get(filetoPath);
