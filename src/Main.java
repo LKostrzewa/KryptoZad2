@@ -18,22 +18,22 @@ public class Main {
         Scanner input = new Scanner(System.in);
         System.out.println("Podaj tekst do rozszyfrowania : ");
         String tekst = input.nextLine();
-        byte [] tym = tekst.getBytes();
+        byte [] tym = tekst.getBytes();                 // Zamiana tekstu na tablice byte
         //int[] tym2 = new int[tym.length];
 
-        for(int i=0;i<tym.length; i++){
+        for(int i=0;i<tym.length; i++){                     // podgladam se tablice
             System.out.println(tym[i]);
         }
 
-        IntBuffer intBuf =
+        IntBuffer intBuf =                                  // --- od tąd
                 ByteBuffer.wrap(tym)
                         .order(ByteOrder.BIG_ENDIAN)
                         .asIntBuffer();
         int[] tym2 = new int[intBuf.remaining()];
-        intBuf.get(tym2);
-
+        intBuf.get(tym2);                                   // do tąd jest pirdolnik z neta co zamienia to na tablice int
+                                                            // to gowno dziala, wczesniej mialem zrobione samemu i tez dzialalo jkbc
         for(int i=0;i<tym2.length; i++){
-            System.out.println(tym2[i]);
+            System.out.println(tym2[i]);                    // i tu se jom wyswietlam ( dla malych tekstow wysliwetla sie jako jedna liczba)
         }
 
         /*for(int i=0; i<tym.length; i+=4) {
@@ -109,10 +109,10 @@ public class Main {
         }*/
 
 
-        for(int i = 0; i < szyfry.x1.length; i++){
-            long pom = szyfry.x1[i].longValue();
-            int jeden = (int) (pom & 0xFFFFFFFF);
-            int dwa = (int) ((pom>>32) & 0xFFFFFFFF);
+        for(int i = 0; i < szyfry.x1.length; i++){          // Prawdopodobnie ten for nie dziala
+            long pom = szyfry.x1[i].longValue();            // ma on za zadanie podzielic naszego longa na dwa inty i sprawdzic
+            int jeden = (int) (pom & 0xFFFFFFFF);           // który z 4 znków jest poprawny ( a będzie to ten w którym jeden
+            int dwa = (int) ((pom>>32) & 0xFFFFFFFF);       // int bedzie samymi zerami tak jak przy szyfrowaniu ustalilismy)
             long pom1 = szyfry.x2[i].longValue();
             int jeden1 = (int) (pom1 & 0xFFFFFFFF);
             int dwa1 = (int) ((pom1>>32) & 0xFFFFFFFF);

@@ -25,18 +25,15 @@ public class Rabin {
         BigInteger P;
         Random rnd = new Random();
         do {
-            P = BigInteger.probablePrime(64, rnd);
-            System.out.println("Heja " + P);
+            P = BigInteger.probablePrime(64, rnd);  // tu se ustawiasz długość klucza do losowania w bitach
+            System.out.println("Heja " + P);                    // to zrobilem zeby pokazalo ile razy losuje klucz
         } while (!P.mod(FOUR).equals(THREE));
-        //long P;
-
-
-
         return P;
-
-
-
     }
+
+
+
+    // TEJ FUNKCJI NIE UZYWAM
 
     public boolean returnPrime(BigInteger number) {
         //check via BigInteger.isProbablePrime(certainty)
@@ -57,6 +54,9 @@ public class Rabin {
         }
         return true;
     }
+
+
+    // TEJ TEZ NIE XDD
 
     public boolean Miller_Rabin(BigInteger P){
         Random rnd = new Random();
@@ -113,33 +113,33 @@ public class Rabin {
         BigInteger tmp1, tmp2, n;
         //tmp1=BigInteger.valueOf(p);
         //tmp2=BigInteger.valueOf(q);
-        n=p.multiply(q);
+        n=p.multiply(q);                // Normalnie mnozymy
         return n;
     }
     ///szyfrowanie --> C=P^2(mod N)
     public BigInteger[] cipher(int[] plain, BigInteger n){
-        //short[] plainShort = convert2(plain);
-        BigInteger[] ciphered = new BigInteger[plain.length];
+        //short[] plainShort = convert2(plain);                             // Tu sie zaczyna jazda wariacka
+        BigInteger[] ciphered = new BigInteger[plain.length];               // na starcie wczytuje tablice utworzoną w main
         BigInteger temp;
         for(int i=0 ;i<plain.length ;i++)
         {
             long tmp;
             System.out.println(plain[i]);
-            int pom1 = 0x00000000;
-
-            for(int k = 0; k < Integer.numberOfLeadingZeros((int)pom1); k++) {
+            int pom1 = 0x00000000;                                          // to bedzie int do sprawdzania, ktory z 4 znakow
+                                                                            // jest poprawny
+            for(int k = 0; k < Integer.numberOfLeadingZeros((int)pom1); k++) {  // -- od tad
                 System.out.print('0');
             }
-            System.out.println(Integer.toBinaryString((int)pom1));
+            System.out.println(Integer.toBinaryString((int)pom1));          // -- do tad se wyswietlam inta z dodanymi zerami
 
-            long pom = (long) ((plain[i])<<32 | pom1 & 0xffffffff);
+            long pom = (long) ((plain[i])<<32 | pom1 & 0xffffffff);         // tworzze longa z inta 'zer' i naszego znaku
             //long pom = (long) (plain[i] & 0xffffffff | (pom1)<<32);
-            System.out.println(pom);
+            System.out.println(pom);                                        // tu podobnie
             for(int k = 0; k < Long.numberOfLeadingZeros((long)pom); k++) {
                 System.out.print('0');
             }
             System.out.println(Long.toBinaryString((long)pom));
-            tmp=(pom*pom);
+            tmp=(pom*pom);                                                  // mnozymy se long*long (nie powinno sie wyjebac bo pierwsze 32 bit to same zera
             for(int k = 0; k < Long.numberOfLeadingZeros((long)tmp); k++) {
                 System.out.print('0');
             }
