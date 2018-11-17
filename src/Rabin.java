@@ -24,12 +24,16 @@ public class Rabin {
         /*Random rand = new Random();
         int p=rand.nextInt(700)*4+3;
         return p;*/
+        BigInteger FOUR;
+        FOUR = BigInteger.valueOf(4);
+        BigInteger THREE;
+        THREE = BigInteger.valueOf(3);
         BigInteger P;
+        Random rnd = new Random();
         do {
-            Random rnd = new Random();
-            P = BigInteger.probablePrime(10, rnd);
+            P = BigInteger.probablePrime(64, rnd);
             System.out.println("Heja");
-        } while (!returnPrime(P));
+        } while (!P.mod(FOUR).equals(THREE));
         return P;
 
     }
@@ -245,8 +249,8 @@ public class Rabin {
     }
 
 
-    public void saveToFile(byte[] cipheredText, String filePath, String filetoPath){
-        Path path = Paths.get(filetoPath);
+    public void saveToFile(byte[] cipheredText, String filePath){
+        Path path = Paths.get(filePath);
         try{
             Files.write(path, cipheredText);
         }
