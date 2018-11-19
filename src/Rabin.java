@@ -122,8 +122,10 @@ public class Rabin {
         BigInteger temp;
         for(int i=0 ;i<plain.length ;i++)
         {
+            byte pom = 0x00;
+            short plainShort = (short)(((pom & 0xFF) << 8) | (plain[i] & 0xFF));
             int tmp;
-            tmp=(plain[i]*plain[i]);
+            tmp=(plainShort*plainShort);
             temp=BigInteger.valueOf(tmp);
             System.out.println("Tekst jawny o indeksie " + i + "to: " + plain[i]);
             System.out.print("zkwadratowany element tekstu jawnego : ");
